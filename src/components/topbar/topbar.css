@@ -1,0 +1,70 @@
+.topbarContainer {
+  height: 100px;
+  width: 100%;
+  background-color: #eff2f3;
+  display: flex;
+  align-items: center;
+  position: sticky;
+  top: 0;
+  z-index: 999;
+}
+.topbarLogo {
+  font-size: 20px;
+  font-style: 40px;
+  margin-left: 40px;
+  font-weight: bold;
+  color: rgb(17, 14, 14);
+  cursor: pointer;
+}
+.topbarLeft {
+  flex: 3;
+}
+.topbarCenter {
+  flex: 5;
+}
+.topbarRight {
+  flex: 3;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: white;
+}
+
+.topbarImg {
+  width: 60px;
+  height: 60px;
+  border-radius: 50px;
+  object-fit: cover;
+  margin-right: 10px;
+  border: 3px solid rgb(104, 104, 156);
+  align-items: center;
+}
+.profileNameAndImage {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.profileNameText {
+  font-weight: 500;
+  font-size: 18px;
+
+  float: left;
+  width: calc(66.666% - 2rem);
+}
+
+.profileNameTextAndBio {
+  display: flex;
+  align-items: center;
+}
+.topbarRight {
+  display: flex;
+  flex-direction: row-reverse;
+  margin-right: 100px;
+  color: black;
+}
+.logoutButton {
+  display: flex;
+  flex-direction: row;
+  cursor: pointer;
+  color: blue;
+}

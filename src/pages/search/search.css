@@ -1,0 +1,84 @@
+.search {
+  background-color: #eeee;
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+}
+
+.searchbarContainer {
+  width: 40%;
+  margin: 5px 5px 25px 25px;
+  display: flex;
+  padding-right: 40px;
+  flex-direction: column;
+  align-items: center;
+  min-width: 20px;
+}
+
+.inputWrapper {
+  background-color: white;
+  width: 100%;
+  border-radius: 10px;
+  height: 2.5rem;
+  padding: 0 15px;
+  box-shadow: 0 0 8px #ddd;
+  display: flex;
+  align-items: center;
+}
+
+input {
+  background-color: transparent;
+  border: none;
+  height: 100%;
+  font-size: 1.25rem;
+  width: 100%;
+  margin-left: 5px;
+}
+
+input:focus {
+  outline: none;
+}
+
+.searchIcon {
+  color: royalblue;
+}
+.searchbarCenter {
+  margin-top: 40px;
+  margin: 40px 20px 20px 20px;
+  height: 70px;
+  width: 40%;
+  background-color: #eff2f3;
+  display: flex;
+  border-radius: 30px;
+  justify-content: center;
+
+  align-items: center;
+}
+.SearchIcon {
+  font-size: 30% !important;
+  margin-left: 5px;
+}
+.searchInput {
+  border: none;
+  width: 70%;
+  height: 30px;
+  margin-left: 10px;
+}
+
+.searchInput:focus {
+  outline: none;
+}
+.friendList {
+  background-color: white;
+  color: black;
+}
+.searchResult {
+  padding: 10px;
+  align-items: center;
+  justify-content: left;
+  width: 280px;
+  background-color: white;
+  margin-top: 20px;
+  border-radius: 5px;
+  font-weight: 500;
+}
