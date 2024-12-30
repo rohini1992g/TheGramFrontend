@@ -85,7 +85,9 @@ export default function Profile() {
             </Link>
           </div>
 
-          <div className="profileRightBottom"></div>
+          <div className="profileRightBottom">
+            <Rightbar user={user} />
+          </div>
         </div>
       </div>
     </>
