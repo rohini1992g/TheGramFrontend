@@ -2,12 +2,13 @@ import axios from "axios";
 import { SearchIcon } from "lucide-react";
 import { useEffect } from "react";
 import { useState } from "react";
+import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 
 const Search = () => {
   const [query, setQuery] = useState("");
   const [searchResult, setSearchResult] = useState([]);
-  const [user, setUser] = useState("");
+
   useEffect(() => {
     const fetchData = async () => {
       const res = await axios.get(
@@ -22,27 +23,24 @@ const Search = () => {
     }
   }, [query]);
   return (
-    <div>
-      <div className="">
-        <div className=" mt-10 ">
-          <div className="flex pl-8">
-            <SearchIcon className="" />
-            <input
-              type="text"
-              placeholder="Search for friends........"
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              className="pl-3"
-            />
-          </div>
-          <Link to={`/profile/${user?._id}`}>
-            {query?.length > 0 &&
-              searchResult?.map((res) => (
-                <div className="mt-3 ml-10 bg-[lightblue]">{res?.username}</div>
-              ))}
-          </Link>
-        </div>
+    <div className=" mt-10 ">
+      <div className="flex pl-8 bg-gray-100 h-10 rounded-xl">
+        <SearchIcon className=" h-10" />
+        <input
+          type="text"
+          placeholder="Search for friends........"
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          className=" pl-3 bg-gray-100 rounded-xl "
+        />
       </div>
+
+      {query?.length > 0 &&
+        searchResult?.map((res) => (
+          <Link to={`/profile/${res?._id}`}>
+            <div className="mt-3 ml-10 ">{res?.username}</div>
+          </Link>
+        ))}
     </div>
   );
 };

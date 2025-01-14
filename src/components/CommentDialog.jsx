@@ -5,9 +5,20 @@ import { Link } from "react-router-dom";
 import { MoreHorizontal } from "lucide-react";
 import { Button } from "./ui/button";
 import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { Comment } from "./Comment";
+import axios from "axios";
+import { setPosts } from "@/redux/postSlice";
+import { useEffect } from "react";
+import { toast } from "sonner";
+
 const CommentDialog = ({ open, setOpen }) => {
   const [text, setText] = useState("");
 
+  const { selectedPost, posts } = useSelector((store) => store.post);
+  const [comment, setComment] = useState([]);
+
+  const dispatch = useDispatch();
   const changeEventHandler = (e) => {
     const inputText = e.target.value;
     if (inputText.trim()) {
@@ -16,44 +27,81 @@ const CommentDialog = ({ open, setOpen }) => {
       setText("");
     }
   };
+  useEffect(() => {
+    if (selectedPost) {
+      setComment(selectedPost.comments);
+    }
+  }, [selectedPost]);
 
-  const sendMesssageHandler = () => {};
+  const sendMesssageHandler = async () => {
+    try {
+      const res = await axios.post(
+        `http://localhost:8000/api/v1/post/${selectedPost?._id}/comment`,
+        { text },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+          withCredentials: true,
+        }
+      );
+
+      if (res.data.success) {
+        const updatedCommentData = [...comment, res.data.comment];
+        setComment(updatedCommentData);
+
+        const updatedPostData = posts.map((p) =>
+          p._id === selectedPost?._id
+            ? { ...p, comments: updatedCommentData }
+            : p
+        );
+        dispatch(setPosts(updatedPostData));
+        toast.success(res.data.message);
+        setText("");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <Dialog open={open}>
       <DialogContent
         onInteractOutside={() => setOpen(false)}
-        className="p-0 max-w-5xl flex flex-col"
+        className=" max-w-3xl flex flex-col"
       >
         <DialogTitle>
           <div className="flex flex-1">
             <div className="w-1/2">
               <img
-                src="https://images.unsplash.com/photo-1731466224983-01f32f883ea7?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxmZWF0dXJlZC1waG90b3MtZmVlZHw1MHx8fGVufDB8fHx8fA%3D%3D"
+                src={selectedPost?.image}
                 alt=""
                 className="w-full h-full object-cover rounded-l-lg"
               />
             </div>
 
             <div className="w-1/2 flex flex-col justify-between">
-              <div className="flex items-center justify-between">
+              <div className="flex items-center justify-between p-4">
                 <div className="flex gap-3 items-center">
                   <Avatar>
-                    <AvatarImage src="" />
+                    <AvatarImage src={selectedPost?.author?.profilePicture} />
                     <AvatarFallback>CNss</AvatarFallback>
                   </Avatar>
 
                   <div>
-                    <span className="font-semibold text-xs">Username</span>
+                    <span className="font-semibold text-xs">
+                      {selectedPost?.author?.username}
+                    </span>
                     {/* <span className="text-gray-600 text-sm">Bio Here..</span> */}
                   </div>
                 </div>
                 <Dialog>
                   <DialogTrigger asChild>
-                    <MoreHorizontal />
+                    <MoreHorizontal className="cursor-pointer" />
                   </DialogTrigger>
                   <DialogContent>
                     <DialogTitle className="flex flex-col items-center text-sm text-center">
-                      <div className="cursor-pointer justify-center">
+                      <div className="cursor-pointer w-full font-bold justify-center">
                         Unfollow
                       </div>
                     </DialogTitle>
@@ -61,8 +109,10 @@ const CommentDialog = ({ open, setOpen }) => {
                 </Dialog>
               </div>
               <hr />
-              <div className="flex- overflow-y-auto max-h-96 p-4">
-                Comment here.
+              <div className="flex-1 overflow-y-auto max-h-96 p-4">
+                {comment?.map((comment) => (
+                  <Comment key={comment._id} comment={comment} />
+                ))}
               </div>
               <div className="p-4">
                 <div className="flex items-center gap-2">

@@ -2,10 +2,11 @@ import React from "react";
 import Feed from "./Feed";
 import { Outlet } from "react-router-dom";
 import RightSidebar from "./RightSidebar";
-import { useGetAllPost } from "../hooks/useGetAllPost";
 import { useGetSuggestedUser } from "@/hooks/useGetSuggestedUser";
+import { useGetAllPost } from "@/hooks/useGetAllPost";
 const Home = () => {
   useGetAllPost();
+
   useGetSuggestedUser();
 
   return (

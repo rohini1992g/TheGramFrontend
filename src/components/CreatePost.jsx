@@ -18,6 +18,8 @@ export const CreatePost = ({ open, setOpen }) => {
   const imageRef = useRef();
   const [file, setFile] = useState();
   const [caption, setCaption] = useState("");
+  const [location, setLocation] = useState("");
+
   const [imagePreview, setImagePreview] = useState("");
   const [loading, setLoading] = useState(false);
   const { user } = useSelector((store) => store.auth);
@@ -36,6 +38,7 @@ export const CreatePost = ({ open, setOpen }) => {
   const createPostHandler = async () => {
     const formData = new FormData();
     formData.append("caption", caption);
+    formData.append("location", location);
     if (imagePreview) formData.append("image", file);
     try {
       const res = await axios.post(
@@ -61,7 +64,10 @@ export const CreatePost = ({ open, setOpen }) => {
   return (
     <div>
       <Dialog open={open}>
-        <DialogContent onInteractOutside={() => setOpen(false)}>
+        <DialogContent
+          onInteractOutside={() => setOpen(false)}
+          className=" max-h-4xl flex flex-col"
+        >
           <DialogTitle>
             <DialogHeader className="text-center font-bold ">
               Create a post
@@ -84,36 +90,53 @@ export const CreatePost = ({ open, setOpen }) => {
             />
             {imagePreview && (
               <div className="w-full h-64 flex items-center justify-center">
-                <img src={imagePreview} alt="Image" className="object-cover" />
+                <img
+                  src={imagePreview}
+                  alt="Image"
+                  className="object-cover h-full w-full rounded-md"
+                />
               </div>
             )}
+            <div className="flex gap-2 my-2">
+              <h2>@</h2>
+              <input
+                type="text"
+                value={location}
+                onChange={(e) => setLocation(e.target.value)}
+                placeholder="Enter location here.."
+                className="focus-visible:ring-transparent border-none"
+              />
+            </div>
+
             <Input
               ref={imageRef}
               type="file"
               className="hidden"
               onChange={fileChangeHandler}
             />
-            <Button
-              onClick={() => imageRef.current.click()}
-              className="bg-[#0095F6] hover:bg-[#0095F6]"
-            >
-              Select From Computer
-            </Button>
-            {imagePreview &&
-              (loading ? (
-                <Button>
-                  <Loader2 className="mr-2 h-3 w-4 animate-spin" />
-                  Please wait..
-                </Button>
-              ) : (
-                <Button
-                  type="submit"
-                  onClick={createPostHandler}
-                  className="bg-[#0095F6] hover:bg-[#0095F6]"
-                >
-                  Post
-                </Button>
-              ))}
+            <div className="flex  justify-between my-3">
+              <Button
+                onClick={() => imageRef.current.click()}
+                className="bg-[#0095F6] hover:bg-[#0095F6]"
+              >
+                Select From Computer
+              </Button>
+              {imagePreview &&
+                (loading ? (
+                  <Button>
+                    <Loader2 className="mr-2 h-3 w-4 animate-spin" />
+                    Please wait..
+                  </Button>
+                ) : (
+                  <Button
+                    type="submit"
+                    onClick={createPostHandler}
+                    className="bg-[#0095F6] hover:bg-[#0095F6]"
+                  >
+                    Post
+                  </Button>
+                ))}
+            </div>
           </DialogTitle>
         </DialogContent>
       </Dialog>

@@ -7,14 +7,14 @@ import { toast } from "sonner";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import { Loader2 } from "lucide-react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { setAuthUser } from "@/redux/authSlice";
-import ResetPassword from "./ResetPassword";
 
 const Login = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const { user } = useSelector((store) => store.auth);
   const [input, setInput] = useState({
     email: "",
     password: "",
@@ -48,11 +48,19 @@ const Login = () => {
       }
     } catch (error) {
       console.log(error);
+      alert("Invalid Email and Password");
       toast.error(error.res.data.message);
     } finally {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    if (user) {
+      navigate("/");
+    }
+  });
+
   return (
     <div className="flex items-center w-screen h-screen justify-center">
       <form
@@ -91,9 +99,10 @@ const Login = () => {
         ) : (
           <Button type="submit">Submit</Button>
         )}
+        <Button> SIGN IN WITH GOOGLE</Button>
         <span className="text-center">Don't have an account? </span>
         <div className="flex flex-col justify-center items-center">
-          <Link to="/resetPassword" className="text-blue-600">
+          <Link to="/forgotPassword" className="text-blue-600">
             Forget Password
           </Link>
           <Link to="/signup" className="text-blue-600">

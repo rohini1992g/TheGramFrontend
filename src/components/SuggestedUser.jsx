@@ -1,9 +1,13 @@
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
+import axios from "axios";
+import { useState } from "react";
 
 export const SuggestedUser = () => {
   const { suggestedUser } = useSelector((store) => store.auth);
+  const { user } = useSelector((store) => store?.auth);
+
   return (
     <div className="my-10">
       <div>
@@ -12,7 +16,7 @@ export const SuggestedUser = () => {
       {suggestedUser &&
         suggestedUser.map((user) => {
           return (
-            <div key={user._id}>
+            <div key={user?._id}>
               <div className="flex items-center gap-4 my-4">
                 <Link to={`/profile/${user?._id}`}>
                   <Avatar className="w-6 h-6">
@@ -32,9 +36,6 @@ export const SuggestedUser = () => {
                     </span>
                   </Link>
                 </div>
-                <span className="text-[#3BADF8] text-xs font-bold cursor-pointer">
-                  Follow
-                </span>
               </div>
             </div>
           );

@@ -6,12 +6,45 @@ import { setSelectedUser } from "@/redux/authSlice";
 import { Button } from "./ui/button";
 import { MessageCircleCode } from "lucide-react";
 import Messages from "./Messages.jsx";
+import axios from "axios";
+import { setMessages } from "@/redux/chatSlice";
+import { useEffect } from "react";
+import { useState } from "react";
 export const ChatPage = () => {
+  const [textMessage, setTextMessage] = useState("");
   const { user, suggestedUser, selectedUser } = useSelector(
     (store) => store.auth
   );
+  const { onlineUsers, messages } = useSelector((store) => store.chat);
   const dispatch = useDispatch();
-  const isOnline = true;
+  const sendMessageHandler = async (receiverId) => {
+    try {
+      const res = await axios.post(
+        `http://localhost:8000/api/v1/message/send/${receiverId}`,
+        {
+          textMessage,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+          withCredentials: true,
+        }
+      );
+      if (res.data.success) {
+        dispatch(setMessages([...messages, res.data.newMessage]));
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    return () => {
+      dispatch(setSelectedUser(null));
+    };
+  }, []);
+
   return (
     <div className="flex">
       <section className="left-0">
@@ -19,6 +52,7 @@ export const ChatPage = () => {
         <hr className="mb-4 border-gray-300" />
         <div className="overflow-y-auto h-[80vh]">
           {suggestedUser.map((suggUser) => {
+            const isOnline = onlineUsers.includes(suggestedUser?._id);
             return (
               <div
                 onClick={() => dispatch(setSelectedUser(suggUser))}
@@ -60,10 +94,14 @@ export const ChatPage = () => {
           <div className="flex items-center p-4 border-t-gray-300">
             <input
               type="text"
+              value={textMessage}
+              onChange={(e) => setTextMessage(e.target.value)}
               placeholder="Type here..."
               className="flex mr-2 focus-visible:ring-transparent"
             />
-            <Button>Send</Button>
+            <Button onClick={() => sendMessageHandler(selectedUser?._id)}>
+              Send
+            </Button>
           </div>
         </section>
       ) : (

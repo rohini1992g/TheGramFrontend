@@ -1,21 +1,19 @@
 import React, { useState } from "react";
-import ReactDOM from "react-dom";
 
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";
 import { toast } from "sonner";
 import axios from "axios";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { Loader2 } from "lucide-react";
-import { useDispatch } from "react-redux";
-import { setAuthUser } from "@/redux/authSlice";
 
 const ResetPassword = () => {
+  const { id, token } = useParams();
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-
+  //const history = useHistory();
   const [input, setInput] = useState({
-    email: "",
+    password: "",
   });
   const changeEventHandler = (e) => {
     setInput({ ...input, [e.target.name]: e.target.value });
@@ -26,7 +24,7 @@ const ResetPassword = () => {
     try {
       setLoading(true);
       const res = await axios.post(
-        "http://localhost:8000/api/v1/user/forgetPassword",
+        `http://localhost:8000/api/v1/user/resetPassword/${id}/${token}`,
         input,
         {
           headers: {
@@ -35,16 +33,19 @@ const ResetPassword = () => {
           withCredentials: true,
         }
       );
-      if (res.data.success) {
+      if (res.data.Status === "Success") {
         navigate("/login");
-        toast.success(res.data.message);
+
+        toast.success(res.data.Status);
         setInput({
           email: "",
         });
+      } else {
+        console.log(error);
       }
     } catch (error) {
       console.log(error);
-      toast.error(error.res.data.message);
+      toast.error(error.response.data.Status);
     } finally {
       setLoading(false);
     }
@@ -61,11 +62,11 @@ const ResetPassword = () => {
         </div>
 
         <div>
-          <span className="font-medium">Email</span>
+          <span className="font-medium">Password</span>
           <Input
-            type="email"
-            name="email"
-            value={input.email}
+            type="password"
+            name="password"
+            value={input.password}
             onChange={changeEventHandler}
           />
         </div>
@@ -76,7 +77,7 @@ const ResetPassword = () => {
             Please wait
           </Button>
         ) : (
-          <Button type="submit">Submit</Button>
+          <Button type="submit">Update</Button>
         )}
         <div className=" ml-10  items-center">
           <Link to="/signup" className="text-blue-600">
